@@ -35,7 +35,7 @@ public:
     }
     else
     {
-      throw range_error("queue is empty");
+      throw range_error("queue is full");
     }
   }
 
@@ -151,7 +151,9 @@ int main()
   //10 9 3 7 8
   try{
     OQ.push_front(10);
-  }catch(range_error error){
+  }
+  catch (range_error &error)
+  {
     cout << error.what() << endl;
   }
   OQ.list_all();
