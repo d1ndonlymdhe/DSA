@@ -1,9 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <functional>
-
-#define VOIDLAMBDA(x) [&]() -> void { x; }
-
 using namespace std;
 template <class T>
 class Node
