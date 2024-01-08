@@ -59,6 +59,15 @@ public:
             size++;
         }
     }
+    void listAll()
+    {
+        cout << "--------" << endl;
+        for (size_t i = 0; i < size; i++)
+        {
+            cout << elements[i] << endl;
+        }
+        cout << "--------" << endl;
+    }
 };
 bool isOperator(char c)
 {
@@ -211,6 +220,7 @@ int postfixResolve(string input){
                 }
                 inputStack.pop();
                 inputStack.pop();
+                inputStack.listAll();
                 break;
             }
         }

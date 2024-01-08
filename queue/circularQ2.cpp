@@ -7,7 +7,7 @@ public:
     int front = -1;
     int rear = -1;
     int max = 0;
-    int *values = 0;
+    int *values = NULL;
 
     circularQ(int size)
     {
@@ -96,7 +96,6 @@ int main()
     q.push(5);
     q.push(6);
     // 3 4 5 6
-    q.listAll();
     q.pop();
     // 4 5 6
     q.push(7);
