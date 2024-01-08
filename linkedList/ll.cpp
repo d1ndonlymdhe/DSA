@@ -46,11 +46,15 @@ public:
   {
     if (!isEmpty())
     {
-      Node<T>* n = head;
-      while(n->value != search_value){
-        if(n->next == NULL){
+      Node<T> *n = head;
+      while (n->value != search_value)
+      {
+        if (n->next == NULL)
+        {
           return NULL;
-        }else{
+        }
+        else
+        {
           n = n->next;
         }
       }
@@ -93,12 +97,6 @@ public:
     if (!isEmpty())
     {
       Node<T> *n = head;
-      if (n->value == search_value)
-      {
-        Node<T> *newHead = new Node<int>(new_value);
-        newHead->next = n;
-        this->head = newHead;
-      }
       while (n->next->value != search_value)
       {
         if (n->next->next == NULL)
@@ -152,10 +150,13 @@ public:
   {
     if (!isEmpty())
     {
+
       Node<T> *n = head;
       if (n->value == search_value)
       {
+        Node<T> *freeThis = head;
         head = head->next;
+        free(freeThis);
         return true;
       }
       else
@@ -170,7 +171,7 @@ public:
           n = n->next;
         }
         Node<T> *freeThis = n->next;
-        n->next = n->next != NULL ? n->next : NULL;
+        n->next = n->next == NULL ? NULL : n->next->next;
         free(freeThis);
         return true;
       }
@@ -255,11 +256,10 @@ int main()
   ll.append_at_last(3);
   ll.append_nextto_value(2, 4);
   ll.append_before_value(4, 5);
-  ll.listAll();
-
   ll.append_at_last(10);
   ll.append_at_last(11);
   ll.append_at_last(12);
+  ll.listAll();
 
   ll.delete_head();
   ll.delete_last();
@@ -269,10 +269,10 @@ int main()
 
   ll.listAll();
 
-  Node<int>* eleven = ll.search(11);
-  if(eleven){
+  Node<int> *eleven = ll.search(11);
+  if (eleven)
+  {
     eleven->value = 100;
   }
   ll.listAll();
-
 }
