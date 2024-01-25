@@ -8,7 +8,14 @@ class BSTnode {
   BSTnode *right = NULL;
 
   BSTnode(int value) { this->value = value; }
-
+  BSTnode(int children[], int children_size) {
+    if (children_size > 0) {
+      value = children[0];
+      for (int i = 1; i < children_size; i++) {
+        this->addChild(children[i]);
+      }
+    }
+  }
   void addChildren(int children[], int children_size) {
     for (int i = 0; i < children_size; i++) {
       this->addChild(new BSTnode(children[i]));
@@ -25,7 +32,10 @@ class BSTnode {
   }
   void addChild(BSTnode *child) {
     if (child) {
-      if (child->value <= this->value) {
+      if (child->value == this->value) {
+        return;
+      }
+      if (child->value < this->value) {
         if (this->left) {
           this->left->addChild(child);
         } else {
@@ -40,11 +50,25 @@ class BSTnode {
       }
     }
   }
+  BSTnode *getMin() {
+    if (this->left) {
+      return this->left->getMin();
+    } else {
+      return this;
+    }
+  }
+  BSTnode *getMax() {
+    if (this->right) {
+      return this->right->getMax();
+    } else {
+      return this;
+    }
+  }
   void deleteChild(int v) {
     BSTnode *node = search(v);
     BSTnode *parent = getParent(node);
     if (node && parent) {
-      //node is leaf
+      // node is leaf
       if (node->left == NULL && node->right == NULL) {
         if (parent->right == node) {
           parent->right = NULL;
@@ -53,11 +77,37 @@ class BSTnode {
         }
         free(node);
       }
-      //node has only one child
-      if(node->left==NULL || node->right==NULL){
-        if(parent->right == node){
-          
+      // node has both left and right
+      if (node->left != NULL && node->right != NULL) {
+        BSTnode *minNode = node->right->getMin();
+        BSTnode *minParent = this->getParent(minNode);
+        if (minParent->left == minNode) {
+          minParent->left = NULL;
+        } else {
+          minParent->right = NULL;
         }
+        BSTnode *nodeRight = node->right == minNode ? NULL : node->right;
+        BSTnode *nodeLeft = node->left == minNode ? NULL : node->left;
+        if (parent->right == node) {
+          parent->right = NULL;
+        } else {
+          parent->left = NULL;
+        }
+        minNode->addChild(nodeRight);
+        minNode->addChild(nodeLeft);
+        parent->addChild(minNode);
+        free(node);
+      }
+      // node has only one child
+      if (node->left == NULL || node->right == NULL) {
+        BSTnode *nodeChild = node->left ? node->left : node->right;
+        if (parent->right == node) {
+          parent->right = NULL;
+        } else {
+          parent->left = NULL;
+        }
+        parent->addChild(nodeChild);
+        free(node);
       }
     }
   }
@@ -88,7 +138,6 @@ class BSTnode {
     }
     cout << this->value << endl;
   }
-
   BSTnode *getParent(BSTnode *n) {
     if (n) {
       if (n == this) {
@@ -131,7 +180,7 @@ class BSTnode {
     if (this->value == v) {
       return this;
     }
-    if (v <= this->value) {
+    if (v > this->value) {
       if (this->right) {
         return this->right->search(v);
       }
@@ -142,7 +191,6 @@ class BSTnode {
     }
     return NULL;
   }
-
   int size(int initSize = 0) {
     int s = initSize + 1;
     if (this->left) {
@@ -154,3 +202,11 @@ class BSTnode {
     return s;
   }
 };
+
+int main() {
+  int arr[] = {5, 3, 6, 7, 1, 76, 34, 23, 71, 0, 524, 521, 523};
+  BSTnode tree(arr, (sizeof arr) / (sizeof(int)));
+  tree.deleteChild(6);
+  tree.deleteChild(76);
+  tree.preorder();
+}
