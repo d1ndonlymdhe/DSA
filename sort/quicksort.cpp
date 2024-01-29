@@ -7,7 +7,7 @@ void swap(int *a, int *b) {
   *a = t;
 }
 
-int findUp(vector<int> arr, int start, int end, int key) {
+int findUp(int arr[], int start, int end, int key) {
   for (int i = start; i >= end; i--) {
     if (arr[i] < key) {
       return i;
@@ -16,7 +16,7 @@ int findUp(vector<int> arr, int start, int end, int key) {
   return end;
 }
 
-int findDown(vector<int> arr, int start, int end, int key) {
+int findDown(int arr[], int start, int end, int key) {
   for (int i = start; i < end; i++) {
     if (arr[i] > key) {
       return i;
@@ -25,7 +25,7 @@ int findDown(vector<int> arr, int start, int end, int key) {
   return end;
 }
 
-void sort(vector<int> &arr, int start, int end) {
+void sort(int arr[], int start, int end) {
   int size = end - start;
   if (size > 1) {
     int key = arr[start];
@@ -50,8 +50,8 @@ void sort(vector<int> &arr, int start, int end) {
 }
 
 int main() {
-  vector<int> arr = {24, 2, 45, 20, -67,56, 75, 2, 56, 99, 53, 12};
-  sort(arr, 0, arr.size());
+  int arr[] = {24, 2, 45, 20, -67, 56, 75, 2, 56, 99, 53, 12};
+  sort(arr, 0, (sizeof arr) / (sizeof(int)));
   for (int a : arr) {
     cout << a << endl;
   }

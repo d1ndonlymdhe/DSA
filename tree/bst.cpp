@@ -12,18 +12,8 @@ class BSTnode {
     if (children_size > 0) {
       value = children[0];
       for (int i = 1; i < children_size; i++) {
-        this->addChild(children[i]);
+        this->addChild(new BSTnode(children[i]));
       }
-    }
-  }
-  void addChildren(int children[], int children_size) {
-    for (int i = 0; i < children_size; i++) {
-      this->addChild(new BSTnode(children[i]));
-    }
-  }
-  void addChildren(BSTnode children[], int children_size) {
-    for (int i = 0; i < children_size; i++) {
-      this->addChild(children + i);
     }
   }
   void addChild(int v) {
@@ -50,6 +40,7 @@ class BSTnode {
       }
     }
   }
+  // dont copy
   BSTnode *getMin() {
     if (this->left) {
       return this->left->getMin();
@@ -57,6 +48,7 @@ class BSTnode {
       return this;
     }
   }
+  // dont copy
   BSTnode *getMax() {
     if (this->right) {
       return this->right->getMax();
@@ -161,6 +153,7 @@ class BSTnode {
     }
     return NULL;
   }
+  // dont copy
   BSTnode *getSibling(BSTnode *n) {
     if (n) {
       if (n == this) {
@@ -182,12 +175,19 @@ class BSTnode {
     }
     if (v > this->value) {
       if (this->right) {
-        return this->right->search(v);
+        BSTnode *rSearch = this->right->search(v);
+        if (rSearch) {
+          return rSearch;
+        }
       }
-      return NULL;
     }
-    if (this->left) {
-      return this->left->search(v);
+    if (v < this->value) {
+      if (this->left) {
+        BSTnode *lSearch = this->left->search(v);
+        if (lSearch) {
+          return lSearch;
+        }
+      }
     }
     return NULL;
   }
@@ -208,5 +208,17 @@ int main() {
   BSTnode tree(arr, (sizeof arr) / (sizeof(int)));
   tree.deleteChild(6);
   tree.deleteChild(76);
+  cout << "PREORDER" << endl;
   tree.preorder();
+  cout << "INORDER" << endl;
+  tree.inorder();
+  cout << "POSTORDER" << endl;
+  tree.postorder();
+
+  BSTnode *x = tree.search(6);
+  cout << "Searched value" << x->value << endl;
+
+  BSTnode *max = tree.getMax();
+  BSTnode *min = tree.getMin();
+  cout << "Max = " << max->value << " Min = " << min->value << endl;
 }
