@@ -40,7 +40,6 @@ class BSTnode {
       }
     }
   }
-  // dont copy
   BSTnode *getMin() {
     if (this->left) {
       return this->left->getMin();
