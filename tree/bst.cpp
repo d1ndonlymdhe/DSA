@@ -215,7 +215,7 @@ int main() {
   cout << "POSTORDER" << endl;
   tree.postorder();
 
-  BSTnode *x = tree.search(6);
+  BSTnode *x = tree.search(1);
   cout << "Searched value" << x->value << endl;
 
   BSTnode *max = tree.getMax();
