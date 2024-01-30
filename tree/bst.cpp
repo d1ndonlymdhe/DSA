@@ -175,17 +175,17 @@ class BSTnode {
     if (v > this->value) {
       if (this->right) {
         BSTnode *rSearch = this->right->search(v);
-        if (rSearch) {
+       
           return rSearch;
-        }
+        
       }
     }
     if (v < this->value) {
       if (this->left) {
         BSTnode *lSearch = this->left->search(v);
-        if (lSearch) {
+       
           return lSearch;
-        }
+        
       }
     }
     return NULL;
