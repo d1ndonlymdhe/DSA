@@ -1,26 +1,36 @@
 #include <iostream>
 using namespace std;
 
-class BSTnode {
+class AVLnode {
  public:
   int value;
-  BSTnode *left = NULL;
-  BSTnode *right = NULL;
-
-  BSTnode(int value) { this->value = value; }
-  BSTnode(int children[], int children_size) {
+  int balanceFactor = 0;
+  AVLnode *left = NULL;
+  AVLnode *right = NULL;
+  AVLnode(int value) { this->value = value; }
+  AVLnode(int children[], int children_size) {
     if (children_size > 0) {
       value = children[0];
       for (int i = 1; i < children_size; i++) {
-        this->addChild(new BSTnode(children[i]));
+        this->addChild(children[i]);
       }
     }
   }
+  void addChildren(int children[], int children_size) {
+    for (int i = 0; i < children_size; i++) {
+      this->addChild(new AVLnode(children[i]));
+    }
+  }
+  void addChildren(AVLnode children[], int children_size) {
+    for (int i = 0; i < children_size; i++) {
+      this->addChild(children + i);
+    }
+  }
   void addChild(int v) {
-    BSTnode *child = new BSTnode(v);
+    AVLnode *child = new AVLnode(v);
     addChild(child);
   }
-  void addChild(BSTnode *child) {
+  void addChild(AVLnode *child) {
     if (child) {
       if (child->value == this->value) {
         return;
@@ -28,27 +38,33 @@ class BSTnode {
       if (child->value < this->value) {
         if (this->left) {
           this->left->addChild(child);
+          balanceFactor += this->left->balanceFactor -
+                          (this->right ? this->right->balanceFactor : 0);
         } else {
+          balanceFactor++;
           this->left = child;
         }
       } else {
         if (this->right) {
           this->right->addChild(child);
+          //   balanceFactor++;
+          balanceFactor += this->left ? this->left->balanceFactor
+                                     : 0 + this->right->balanceFactor;
         } else {
+          balanceFactor--;
           this->right = child;
         }
       }
     }
   }
-  BSTnode *getMin() {
+  AVLnode *getMin() {
     if (this->left) {
       return this->left->getMin();
     } else {
       return this;
     }
   }
-  // dont copy
-  BSTnode *getMax() {
+  AVLnode *getMax() {
     if (this->right) {
       return this->right->getMax();
     } else {
@@ -56,8 +72,8 @@ class BSTnode {
     }
   }
   void deleteChild(int v) {
-    BSTnode *node = search(v);
-    BSTnode *parent = getParent(node);
+    AVLnode *node = search(v);
+    AVLnode *parent = getParent(node);
     if (node && parent) {
       // node is leaf
       if (node->left == NULL && node->right == NULL) {
@@ -70,15 +86,15 @@ class BSTnode {
       }
       // node has both left and right
       if (node->left != NULL && node->right != NULL) {
-        BSTnode *minNode = node->right->getMin();
-        BSTnode *minParent = this->getParent(minNode);
+        AVLnode *minNode = node->right->getMin();
+        AVLnode *minParent = this->getParent(minNode);
         if (minParent->left == minNode) {
           minParent->left = NULL;
         } else {
           minParent->right = NULL;
         }
-        BSTnode *nodeRight = node->right == minNode ? NULL : node->right;
-        BSTnode *nodeLeft = node->left == minNode ? NULL : node->left;
+        AVLnode *nodeRight = node->right == minNode ? NULL : node->right;
+        AVLnode *nodeLeft = node->left == minNode ? NULL : node->left;
         if (parent->right == node) {
           parent->right = NULL;
         } else {
@@ -91,7 +107,7 @@ class BSTnode {
       }
       // node has only one child
       if (node->left == NULL || node->right == NULL) {
-        BSTnode *nodeChild = node->left ? node->left : node->right;
+        AVLnode *nodeChild = node->left ? node->left : node->right;
         if (parent->right == node) {
           parent->right = NULL;
         } else {
@@ -129,7 +145,7 @@ class BSTnode {
     }
     cout << this->value << endl;
   }
-  BSTnode *getParent(BSTnode *n) {
+  AVLnode *getParent(AVLnode *n) {
     if (n) {
       if (n == this) {
         return NULL;
@@ -138,13 +154,13 @@ class BSTnode {
         return this;
       }
       if (this->left) {
-        BSTnode *checkLeft = this->left->getParent(n);
+        AVLnode *checkLeft = this->left->getParent(n);
         if (checkLeft) {
           return checkLeft;
         }
       }
       if (this->right) {
-        BSTnode *checkRight = this->right->getParent(n);
+        AVLnode *checkRight = this->right->getParent(n);
         if (checkRight) {
           return checkRight;
         }
@@ -152,13 +168,12 @@ class BSTnode {
     }
     return NULL;
   }
-  // dont copy
-  BSTnode *getSibling(BSTnode *n) {
+  AVLnode *getSibling(AVLnode *n) {
     if (n) {
       if (n == this) {
         return NULL;
       }
-      BSTnode *parent = this->getParent(n);
+      AVLnode *parent = this->getParent(n);
       if (parent) {
         if (parent->left == n) {
           return parent->right;
@@ -168,28 +183,22 @@ class BSTnode {
     }
     return NULL;
   }
-  BSTnode *search(int v) {
+  AVLnode *search(int v) {
     if (this->value == v) {
       return this;
     }
     if (v > this->value) {
       if (this->right) {
-        BSTnode *rSearch = this->right->search(v);
-       
-          return rSearch;
-        
+        return this->right->search(v);
       }
+      return NULL;
     }
-    if (v < this->value) {
-      if (this->left) {
-        BSTnode *lSearch = this->left->search(v);
-       
-          return lSearch;
-        
-      }
+    if (this->left) {
+      return this->left->search(v);
     }
     return NULL;
   }
+  void balance(AVLnode *node) {}
   int size(int initSize = 0) {
     int s = initSize + 1;
     if (this->left) {
@@ -204,7 +213,7 @@ class BSTnode {
 
 int main() {
   int arr[] = {5, 3, 6, 7, 1, 76, 34, 23, 71, 0, 524, 521, 523};
-  BSTnode tree(arr, (sizeof arr) / (sizeof(int)));
+  AVLnode tree(arr, (sizeof arr) / (sizeof(int)));
   tree.deleteChild(6);
   tree.deleteChild(76);
   cout << "PREORDER" << endl;
@@ -214,10 +223,10 @@ int main() {
   cout << "POSTORDER" << endl;
   tree.postorder();
 
-  BSTnode *x = tree.search(71);
+  AVLnode *x = tree.search(71);
   cout << "Searched value" << x->value << endl;
 
-  BSTnode *max = tree.getMax();
-  BSTnode *min = tree.getMin();
+  AVLnode *max = tree.getMax();
+  AVLnode *min = tree.getMin();
   cout << "Max = " << max->value << " Min = " << min->value << endl;
 }
