@@ -32,15 +32,11 @@ vector<int> sort(vector<int> arr) {
   }
   vector<int> left, right;
   size_t pivotIdx = size / 2;
-  int smallEqCount = 0;
-  int largeCount = 0;
   for (size_t i = 0; i < size; i++) {
     if (i != pivotIdx) {
       if (arr[i] <= arr[pivotIdx]) {
-        smallEqCount++;
         left.push_back(arr[i]);
       } else {
-        largeCount++;
         right.push_back(arr[i]);
       }
     }

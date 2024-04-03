@@ -1,5 +1,4 @@
 #include <math.h>
-
 #include <iostream>
 using namespace std;
 void innerSort(int arr[], int size, int n) {

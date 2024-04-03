@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 using namespace std;
 
 void insertSort(int *list, int size)
