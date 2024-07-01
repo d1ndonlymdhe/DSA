@@ -1,56 +1,43 @@
 #include <iostream>
 using namespace std;
-void swap(int *a, int *b) {
-  int t = *b;
-  *b = *a;
-  *a = t;
+
+
+// Helper function to swap two elements
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
-int findUp(int arr[], int start, int end, int key) {
-  for (int i = start; i >= end; i--) {
-    if (arr[i] < key) {
-      return i;
+// Partition function
+int partition(vector<int>& arr, int start, int end) {
+    int pivot = arr[end];  // Choose the last element as pivot
+    int i = start - 1;     // Index of the smaller element
+
+    for (int j = start; j <= end - 1; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
     }
-  }
-  return end;
+    swap(&arr[i + 1], &arr[end]);
+    return (i + 1);
 }
 
-int findDown(int arr[], int start, int end, int key) {
-  for (int i = start; i < end; i++) {
-    if (arr[i] > key) {
-      return i;
-    }
-  }
-  return end;
-}
+// Quicksort function
+void quicksort(vector<int>& arr, int start, int end) {
+    if (start < end) {
+        int pi = partition(arr, start, end);  // Partitioning index
 
-void sort(int arr[], int start, int end) {
-  int size = end - start;
-  if (size > 1) {
-    int key = arr[start];
-    int up = end - 1;
-    int down = start;
-    while (down < up) {
-      if (up >= 0) {
-        up = findUp(arr, up, start, key);
-      }
-      if (down < end) {
-        down = findDown(arr, down, end, key);
-      }
-      if (up > down) {
-        swap(&arr[up], &arr[down]);
-      }
+        // Recursively sort elements before and after partition
+        quicksort(arr, start, pi - 1);
+        quicksort(arr, pi + 1, end);
     }
-    swap(&arr[start], &arr[up]);
-    sort(arr, 0, up);
-    sort(arr, down, end);
-  }
-  return;
 }
 
 int main() {
-  int arr[] = {24, 2, 45, 20, -67, 56, 75, 2, 56, 99, 53, 12};
-  sort(arr, 0, (sizeof arr) / (sizeof(int)));
+  vector<int> arr = {24, 2, 45, 20, -67, 56, 75, 2, 56, 99, 53, 12};
+  sort(arr, 0, arr.size()-1);
   for (int a : arr) {
     cout << a << endl;
   }
